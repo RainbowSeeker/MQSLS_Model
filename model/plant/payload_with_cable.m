@@ -32,7 +32,7 @@ function [sys, x0, str, ts] = mdlInitializeSizes
    % cable initial direction && angular velocity
    cable_num = 3;
    theta_0 = [deg2rad(0) deg2rad(0) deg2rad(0)]';
-   psi_0 = [deg2rad(-60) deg2rad(0) deg2rad(60)]';
+   psi_0 = [deg2rad(0) deg2rad(0) deg2rad(0)]';
    q_0 = zeros([cable_num * 3 1]);
    w_0 = zeros([cable_num * 3 1]);
    for i = 1:cable_num
