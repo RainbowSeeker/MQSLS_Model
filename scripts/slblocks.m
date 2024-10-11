@@ -3,10 +3,10 @@ function blkStruct = slblocks
 % should appear in the Library Browser with the 
 % name 'My Library'
 
-    Browser.Library = 'rklib';
+    Browser.Library = 'mqlib';
     % 'mylib' is the name of the library
 
-    Browser.Name = 'Rk Library';
+    Browser.Name = 'MQSLS Library';
     % 'My Library' is the library name that appears
     % in the Library Browser
 
