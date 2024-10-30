@@ -31,13 +31,24 @@ function [sys, x0, str, ts] = mdlInitializeSizes
    vel_0  = [0 0 0]';
    % cable initial direction && angular velocity
    cable_num = 3;
-   theta_0 = [deg2rad(0) deg2rad(0) deg2rad(0)]';
-   psi_0 = [deg2rad(0) deg2rad(0) deg2rad(0)]';
+   initial_condition = 0;
+   switch initial_condition
+      case 0
+         theta_0 = [deg2rad(60) deg2rad(60) deg2rad(60)]';
+         psi_0 = [deg2rad(-120) deg2rad(0) deg2rad(120)]';
+      case 1
+         theta_0 = [deg2rad(30) deg2rad(40) deg2rad(50)]';
+         psi_0 = [deg2rad(-110) deg2rad(10) deg2rad(130)]';
+      otherwise
+         theta_0 = [deg2rad(60) deg2rad(60) deg2rad(60)]';
+         psi_0 = [deg2rad(-120) deg2rad(0) deg2rad(120)]';
+   end
+   
    q_0 = zeros([cable_num * 3 1]);
    w_0 = zeros([cable_num * 3 1]);
    for i = 1:cable_num
-       q_0(3*i-2:3*i) = [cos(psi_0(i)) * sin(theta_0(i)) sin(psi_0(i)) * sin(theta_0(i)) cos(theta_0(i))]';
-       w_0(3*i-2:3*i) = [0 0 0]';
+      q_0(3*i-2:3*i) = [-cos(psi_0(i)) * cos(theta_0(i)) -sin(psi_0(i)) * cos(theta_0(i)) sin(theta_0(i))]';
+      w_0(3*i-2:3*i) = [0 0 0]';
    end
    x0  = [pose_0; vel_0; q_0; w_0];
    str = [];
@@ -49,11 +60,16 @@ function sys = mdlDerivatives(t, x, u)
    cable_num = 3;
    mL = 0.06;  % payload mass [kg]
    mi = 0.21;  % quadrotor mass [kg]
-   li = 0.6;   % cable length [m]
-   g = 9.8;    % gravity [m/s^2]
+   li = [0.6 0.6 0.6]';   % cable length [m]
+   g = 9.81;   % gravity [m/s^2]
    dL = 0 * 0.1 * mL * g * [2/3 2/3 1/3]'; % disturbance force on payload [N]
    di = 0 * 0.1 * mi * g * [2/3 2/3 1/3]'; % disturbance force on quadrotor [N]
-   
+   %% simulate disturbance
+   % pulse disturbance
+   % if t > 4 && t < 4.5
+   %    dL = 0.1 * mL * g * [2/3 0 0]';
+   % end
+
    %% state variables
    pose = x(1:3);
    vel = x(4:6);
@@ -68,19 +84,17 @@ function sys = mdlDerivatives(t, x, u)
    M = mL * eye(3);
    force_sum = [0 0 0]';
    for i = 1:cable_num  % see Eq. (8)
+      q(:,i) = q(:,i) / norm(q(:,i));
       project_i = q(:,i) * q(:,i)';
       M = M + mi * project_i;
-      force_sum = force_sum + project_i * force(:,i) + project_i * di - mi * li * norm(w(:,i))^2 * q(:,i);
+      force_sum = force_sum + project_i * force(:,i) + project_i * di - mi * li(i) * norm(w(:,i))^2 * q(:,i);
    end
    dvel = M \ force_sum + M \ dL + g * [0 0 1]';
    dq = zeros([3 cable_num]);
    dw = zeros([3 cable_num]);
    for i = 1:cable_num  % see Eq. (1)
-      Swi = [0 -w(3,i) w(2,i); w(3,i) 0 -w(1,i); -w(2,i) w(1,i) 0];
-      dq(:,i) = Swi * q(:,i);
-      project_i = q(:,i) * q(:,i)';
-      Sqi = [0 -q(3,i) q(2,i); q(3,i) 0 -q(1,i); -q(2,i) q(1,i) 0];
-      dw(:,i) = 1 / li * Sqi * (dvel - g * [0 0 1]') - 1 / mi / li * Sqi * (eye(3) - project_i) * (force(:,i) + di);
+      dq(:,i) = cross(w(:,i), q(:,i));
+      dw(:,i) = 1 / li(i) * cross(q(:,i), dvel - g * [0 0 1]') - 1 / mi / li(i) * cross(q(:,i), force(:,i) + di);
    end
 
    flatten_dq = reshape(dq, [cable_num * 3 1]);
@@ -89,6 +103,11 @@ function sys = mdlDerivatives(t, x, u)
 end
 
 function sys = mdlOutputs(t, x, u)
+   q = x(7:15);
+   for i = 1:3
+      q(3*i-2:3*i) = q(3*i-2:3*i) / norm(q(3*i-2:3*i));
+   end
+   x(7:15) = q;
    sys = x; % output all states
 end
 
