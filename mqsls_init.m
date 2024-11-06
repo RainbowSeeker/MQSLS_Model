@@ -1,7 +1,8 @@
 %% version
-version = 'v0.0.1';
+version = 'v0.0.2';
 
 %% load
+load('prj_default_config.mat');
 run('bus_export');
-
-run('model/control/control_init.m');
+run('control_init.m');
+run('plant_init.m');
