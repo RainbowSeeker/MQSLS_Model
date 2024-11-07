@@ -1,6 +1,10 @@
 %% Mark
 sim_name = 'normal';
 
+if ~exist('out', 'var')
+    return;
+end
+
 close all;
 %% Payload
 figure;
@@ -37,66 +41,74 @@ hold off;
 % plot3(x.Data, y.Data, z.Data);
 % % axis equal;
 % hold off;
+
+% clear
+clear x y z vx vy vz;
+
 %% Cable
 figure;
 w_ylim = [-0.5 0.5];
 sgtitle(['Cable Direction (', sim_name, ')']);
 
-subplot(3, 2, 1);
-hold on;
-q_1 = out.logsout.find('q_1').Values;
-plot(q_1);
-title('Cable 1 Direction');
-xlabel('time (s)');
-legend('x', 'y', 'z');
-hold off;
+for i = 1:3
+    subplot(3, 2, 2*i-1);
+    hold on;
+    q = out.logsout.find(['q_', num2str(i)]).Values;
+    plot(q);
+    title(['Cable ', num2str(i),' Direction']);
+    xlabel('time (s)');
+    legend('x', 'y', 'z');
+    hold off;
+    
+    subplot(3, 2, 2*i);
+    hold on;
+    w = out.logsout.find(['w_', num2str(i)]).Values;
+    plot(w);
+    title(['Cable ', num2str(i),' Angular velocity']);
+    xlabel('time (s)');
+    ylim(w_ylim);
+    legend('x', 'y', 'z');
+    hold off;
+end
 
-subplot(3, 2, 2);
-hold on;
-w_1 = out.logsout.find('w_1').Values;
-plot(w_1);
-title('Cable 1 Angular velocity');
-xlabel('time (s)');
-ylim(w_ylim);
-legend('x', 'y', 'z');
-hold off;
+% clear
+clear q w w_ylim;
 
-subplot(3, 2, 3);
-hold on;
-q_2 = out.logsout.find('q_2').Values;
-plot(q_2);
-title('Cable 2 Direction');
-xlabel('time (s)');
-legend('x', 'y', 'z');
-hold off;
+%% UAVs
+if isempty(out.logsout.find('phi'))
+    return;
+end
+figure;
+sgtitle(['UAV''s Attitude (', sim_name, ')']);
 
-subplot(3, 2, 4);
-hold on;
-w_2 = out.logsout.find('w_2').Values;
-plot(w_2);
-title('Cable 2 Angular velocity');
-xlabel('time (s)');
-ylim(w_ylim);
-legend('x', 'y', 'z');
-hold off;
+phi = out.logsout.find('phi');
+phi_sp = out.logsout.find('phi_sp');
+theta = out.logsout.find('theta');
+theta_sp = out.logsout.find('theta_sp');
 
-subplot(3, 2, 5);
-hold on;
-q_3 = out.logsout.find('q_3').Values;
-plot(q_3);
-title('Cable 3 Direction');
-xlabel('time (s)');
-legend('x', 'y', 'z');
-hold off;
+for i = 1:3
+    subplot(3, 2, 2*i - 1);
+    hold on;
+    phi{i}.Values.Data = rad2deg(phi{i}.Values.Data);
+    phi_sp{i}.Values.Data = rad2deg(phi_sp{i}.Values.Data);
+    plot(phi{i}.Values);
+    plot(phi_sp{i}.Values);
+    title(['UAV', num2str(i), '''s phi']);
+    xlabel('time (s)');
+    legend('phi', 'phi_{sp}');
+    hold off;
+    
+    subplot(3, 2, 2*i);
+    hold on;
+    theta{i}.Values.Data = rad2deg(theta{i}.Values.Data);
+    theta_sp{i}.Values.Data = rad2deg(theta_sp{i}.Values.Data);
+    plot(theta{i}.Values);
+    plot(theta_sp{i}.Values);
+    title(['UAV', num2str(i), '''s theta']);
+    xlabel('time (s)');
+    legend('theta', 'theta_{sp}');
+    hold off;
+end
 
-subplot(3, 2, 6);
-hold on;
-w_3 = out.logsout.find('w_3').Values;
-plot(w_3);
-title('Cable 3 Angular velocity');
-xlabel('time (s)');
-ylim(w_ylim);
-legend('x', 'y', 'z');
-hold off;
-
-%% over
+% clear
+clear phi phi_sp theta theta_sp;
