@@ -1,7 +1,16 @@
+function simplot(varargin)
 %% Mark
 sim_name = 'normal';
 
-if ~exist('out', 'var')
+if ~isempty(varargin)
+    dataset = varargin{1};
+else
+    % default data source
+    dataset = evalin('base', 'out.logsout'); 
+end
+
+if ~exist('dataset', 'var')
+    disp('No available data source.');
     return;
 end
 
@@ -11,12 +20,8 @@ figure;
 sgtitle(['Payload Trajectory (', sim_name, ')']);
 subplot(2, 1, 1);
 hold on;
-x = out.logsout.find('x').Values;
-y = out.logsout.find('y').Values;
-z = out.logsout.find('z').Values;
-plot(x);
-plot(y);
-plot(z);
+pL = dataset.find('pL').Values;
+plot(pL);
 title('Payload Postion');
 xlabel('time (s)');
 legend('x', 'y', 'z');
@@ -24,15 +29,12 @@ hold off;
 
 subplot(2, 1, 2);
 hold on;
-vx = out.logsout.find('vx').Values;
-vy = out.logsout.find('vy').Values;
-vz = out.logsout.find('vz').Values;
-plot(vx);
-plot(vy);
-plot(vz);
+vL = dataset.find('vL').Values;
+plot(vL);
 title('Payload Velocity');
 xlabel('time (s)');
 legend('vx', 'vy', 'vz');
+ylim([-10 10]);
 hold off;
 
 % 3d
@@ -43,17 +45,16 @@ hold off;
 % hold off;
 
 % clear
-clear x y z vx vy vz;
+clear pL vL;
 
 %% Cable
 figure;
-w_ylim = [-0.5 0.5];
 sgtitle(['Cable Direction (', sim_name, ')']);
 
 for i = 1:3
     subplot(3, 2, 2*i-1);
     hold on;
-    q = out.logsout.find(['q_', num2str(i)]).Values;
+    q = dataset.find(['q_', num2str(i)]).Values;
     plot(q);
     title(['Cable ', num2str(i),' Direction']);
     xlabel('time (s)');
@@ -62,29 +63,29 @@ for i = 1:3
     
     subplot(3, 2, 2*i);
     hold on;
-    w = out.logsout.find(['w_', num2str(i)]).Values;
+    w = dataset.find(['w_', num2str(i)]).Values;
     plot(w);
     title(['Cable ', num2str(i),' Angular velocity']);
     xlabel('time (s)');
-    ylim(w_ylim);
+    ylim([-0.5 0.5]);
     legend('x', 'y', 'z');
     hold off;
 end
 
 % clear
-clear q w w_ylim;
+clear q w;
 
 %% UAVs
-if isempty(out.logsout.find('phi'))
+if isempty(dataset.find('phi'))
     return;
 end
 figure;
 sgtitle(['UAV''s Attitude (', sim_name, ')']);
 
-phi = out.logsout.find('phi');
-phi_sp = out.logsout.find('phi_sp');
-theta = out.logsout.find('theta');
-theta_sp = out.logsout.find('theta_sp');
+phi = dataset.find('phi');
+phi_sp = dataset.find('phi_sp');
+theta = dataset.find('theta');
+theta_sp = dataset.find('theta_sp');
 
 for i = 1:3
     subplot(3, 2, 2*i - 1);
@@ -112,3 +113,5 @@ end
 
 % clear
 clear phi phi_sp theta theta_sp;
+
+end

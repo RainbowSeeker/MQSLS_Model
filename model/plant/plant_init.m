@@ -27,6 +27,6 @@ ModelInit_Att_r = 0;              % 四旋翼初始偏航角速率r(Rad/s)
 %==========================================================================
 
 %四旋翼吊挂重物后的绳索拉力信息
-% F_rope = 0;                 %货物通过绳索作用给无人机的拉力（N）
-% AngleRope_z = deg2rad(0);  %绳索与OZ_e轴的夹角（rad）
-% AngleRope_x = deg2rad(0);   %拉力F_Rope投影在XOY_e平面后与OX_e轴的夹角（rad）
+F_rope = 0;                 %货物通过绳索作用给无人机的拉力（N）
+AngleRope_z = deg2rad(0);  %绳索与OZ_e轴的夹角（rad）
+AngleRope_x = deg2rad(0);   %拉力F_Rope投影在XOY_e平面后与OX_e轴的夹角（rad）

@@ -31,7 +31,7 @@ function [sys, x0, str, ts] = mdlInitializeSizes
    vel_0  = [0 0 0]';
    % cable initial direction && angular velocity
    cable_num = 3;
-   initial_condition = 1;
+   initial_condition = 0;
    switch initial_condition
       case 0
          theta_0 = [deg2rad(60) deg2rad(60) deg2rad(60)]';
@@ -58,10 +58,10 @@ end
 function sys = mdlDerivatives(t, x, u)
    %% system parameters
    cable_num = 3;
-   mL = 0.5;  % payload mass [kg]
+   mL = 1;  % payload mass [kg]
    mi = 1.5;  % quadrotor mass [kg]
-   li = [1 1 1]';   % cable length [m]
-   g = 9.81;   % gravity [m/s^2]
+   li = 1 * ones(3,1);   % cable length [m]
+   g = 9.8;   % gravity [m/s^2]
    dL = 0 * 0.1 * mL * g * [2/3 2/3 1/3]'; % disturbance force on payload [N]
    di = 0 * 0.1 * mi * g * [2/3 2/3 1/3]'; % disturbance force on quadrotor [N]
    %% simulate disturbance
