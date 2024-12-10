@@ -14,7 +14,7 @@ if ~exist('dataset', 'var')
     return;
 end
 
-close all;
+% close all;
 %% Payload
 figure;
 sgtitle(['Payload Trajectory (', sim_name, ')']);
@@ -34,7 +34,7 @@ plot(vL);
 title('Payload Velocity');
 xlabel('time (s)');
 legend('vx', 'vy', 'vz');
-ylim([-10 10]);
+% ylim([-10 10]);
 hold off;
 
 % 3d
@@ -46,6 +46,30 @@ hold off;
 
 % clear
 clear pL vL;
+
+if ~isempty(dataset.find('euler'))
+figure;
+sgtitle(['Payload Attitude (', sim_name, ')']);
+subplot(2, 1, 1);
+hold on;
+euler = dataset.find('euler').Values * rad2deg(1);
+plot(euler);
+title('Payload Attitude (deg)');
+xlabel('time (s)');
+legend('phi', 'theta', 'psi');
+hold off;
+
+subplot(2, 1, 2);
+hold on;
+omega = dataset.find('omega').Values * rad2deg(1);
+plot(omega);
+title('Payload Angle Rate (deg/s)');
+xlabel('time (s)');
+legend('p', 'q', 'r');
+hold off;
+% clear
+clear euler omega;
+end
 
 %% Cable
 figure;
