@@ -4,6 +4,7 @@ sim_name = 'normal';
 
 if ~isempty(varargin)
     dataset = varargin{1};
+    sim_name = varargin{2};
 else
     % default data source
     dataset = evalin('base', 'out.logsout'); 
@@ -38,14 +39,11 @@ legend('vx', 'vy', 'vz');
 hold off;
 
 % 3d
-% figure;
-% sgtitle('3D Trajectory');
-% plot3(x.Data, y.Data, z.Data);
-% % axis equal;
-% hold off;
-
-% clear
-clear pL vL;
+figure;
+sgtitle(['3D Trajectory (', sim_name, ')']);
+plot3(pL.Data(:, 1), pL.Data(:, 2), pL.Data(:, 3));
+axis equal;
+hold off;
 
 if ~isempty(dataset.find('euler'))
 figure;
@@ -67,8 +65,6 @@ title('Payload Angle Rate (deg/s)');
 xlabel('time (s)');
 legend('p', 'q', 'r');
 hold off;
-% clear
-clear euler omega;
 end
 
 %% Cable
@@ -96,10 +92,8 @@ for i = 1:3
     hold off;
 end
 
-% clear
-clear q w;
-
 %% UAVs
+
 if isempty(dataset.find('phi'))
     return;
 end
@@ -134,8 +128,5 @@ for i = 1:3
     legend('theta', 'theta_{sp}');
     hold off;
 end
-
-% clear
-clear phi phi_sp theta theta_sp;
 
 end
