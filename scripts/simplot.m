@@ -93,7 +93,7 @@ for i = 1:3
 end
 
 %% UAVs
-
+return;
 if isempty(dataset.find('phi'))
     return;
 end

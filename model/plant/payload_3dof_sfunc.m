@@ -34,11 +34,11 @@ function [sys, x0, str, ts] = mdlInitializeSizes
    initial_condition = 0;
    switch initial_condition
       case 0
-         theta_0 = [deg2rad(60) deg2rad(60) deg2rad(60)]';
+         theta_0 = [deg2rad(20) deg2rad(20) deg2rad(20)]';
          psi_0 = [deg2rad(-120) deg2rad(0) deg2rad(120)]';
       case 1
-         theta_0 = [deg2rad(80) deg2rad(80) deg2rad(80)]';
-         psi_0 = [deg2rad(-110) deg2rad(10) deg2rad(130)]';
+         theta_0 = [deg2rad(60) deg2rad(60) deg2rad(60)]';
+         psi_0 = [deg2rad(-120) deg2rad(0) deg2rad(120)]';
       otherwise
          theta_0 = [deg2rad(90) deg2rad(90) deg2rad(90)]';
          psi_0 = [deg2rad(0) deg2rad(0) deg2rad(0)]';
@@ -61,8 +61,8 @@ function sys = mdlDerivatives(t, x, u)
    mi = 1.5;  % quadrotor mass [kg]
    li = 1 * ones(3,1);   % cable length [m]
    g = 9.8;   % gravity [m/s^2]
-   delta_xL = 1 * 0.2 * mL * g * [2/3 2/3 1/3]'; % disturbance force on payload [N]
-   delta_xi = 1 * 0.3 * mi * g * [2/3 2/3 1/3]'; % disturbance force on quadrotor [N]
+   delta_xL = 1 * 0.1 * mL * g * [2/3 2/3 1/3]'; % disturbance force on payload [N]
+   delta_xi = 1 * 0.1 * mi * g * [2/3 2/3 1/3]'; % disturbance force on quadrotor [N]
    %% simulate disturbance
    % pulse disturbance
    % if t > 4 && t < 4.5
@@ -98,6 +98,10 @@ function sys = mdlDerivatives(t, x, u)
       ai = dvel - g * [0 0 1]';
       dq(:,i) = cross(w(:,i), q(:,i));
       dw(:,i) = 1 / li(i) * cross(q(:,i), ai) - 1 / mi / li(i) * cross(q(:,i), force(:,i) + delta_xi);
+   end
+
+   if any(dpose > 100)
+      dpose;
    end
    
    flatten_dq = reshape(dq, [cable_num * 3 1]);
