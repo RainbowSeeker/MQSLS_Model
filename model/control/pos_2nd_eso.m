@@ -18,6 +18,8 @@ classdef (StrictDefaults) pos_2nd_eso < matlab.System
     % Public, non-tunable properties
     properties (Nontunable)
         
+        % SampleTime
+        SampleTime (1, 1) double {mustBeNumeric, mustBeReal} = -1
     end
 
     % Discrete state properties
@@ -138,7 +140,11 @@ classdef (StrictDefaults) pos_2nd_eso < matlab.System
         function sts = getSampleTimeImpl(obj)
             % Define sample time type and parameters
             % sts = obj.createSampleTime("Type", "Discrete", "SampleTime", 0.1);
-            sts = createSampleTime(obj);
+            if obj.SampleTime == -1
+                sts = createSampleTime(obj, 'Type', 'Inherited');
+            else
+                sts = createSampleTime(obj, 'Type', 'Discrete', 'SampleTime', obj.SampleTime);
+            end
         end
 
         function varargout = getOutputDataTypeImpl(obj)

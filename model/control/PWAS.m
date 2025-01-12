@@ -12,14 +12,10 @@ if WrenchIsValid(F_trim, A_wrench, b_wrench)
 % if F_trim in W
     F_fixed = F_trim;
     F_var = F_way;
-elseif WrenchIsValid([0;0;F_trim(3)], A_wrench, b_wrench)
-% elseif F_trim(3) in W
-    F_fixed = [0;0;F_trim(3)];
-    F_var = [F_trim(1);F_trim(2);0];
 else
 % else
     F_fixed = [0;0;0];
-    F_var = [0;0;F_trim(3)];
+    F_var = [F_trim(1);F_trim(2);F_trim(3)];
 end
 
 alpha = PWAS_LOPT(F_fixed, F_var, A_wrench, b_wrench);

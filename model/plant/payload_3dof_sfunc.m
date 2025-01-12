@@ -65,9 +65,10 @@ function sys = mdlDerivatives(t, x, u)
    delta_xi = 1 * 0.1 * mi * g * [2/3 2/3 1/3]'; % disturbance force on quadrotor [N]
    %% simulate disturbance
    % pulse disturbance
-   % if t > 4 && t < 4.5
-   %    dL = 0.12 * mL * g * [2/3 0 0]';
-   % end
+   if t < 0
+      delta_xL = 0*delta_xL;
+      delta_xi = 0*delta_xi;
+   end
    
    %% state variables
    pose = x(1:3);

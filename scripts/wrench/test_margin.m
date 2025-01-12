@@ -7,7 +7,7 @@ for i = 1:3
   q(:, i) = [-cos(psi(i)) * cos(theta(i)) -sin(psi(i)) * cos(theta(i)) sin(theta(i))];
 end
 W = -q;
-center = [0; 0; -10];
+center = [-2; -2; -10];
 
 % solver
 margin = margin_lp(center, W, T_min, T_max);
@@ -22,7 +22,7 @@ radius = margin;
 [x, y, z] = sphere(50);
 x_new = radius * x + center(2);
 y_new = radius * y + center(1);
-z_new = radius * z - center(3);
+z_new = radius * z + center(3);
 surf(x_new, y_new, z_new, 'FaceColor', 'b', 'FaceAlpha', 0.5, 'EdgeColor', 'none');
 
 title(['margin = ', num2str(margin)]);
