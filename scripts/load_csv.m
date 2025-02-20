@@ -22,6 +22,7 @@ vL = [rtable.vx rtable.vy rtable.vz];
 % add to dataset
 ds = addToDataset(ds, 'pL', timeseries(pL, timestamp));
 ds = addToDataset(ds, 'vL', timeseries(vL, timestamp));
+ds = addToDataset(ds, 'margin', timeseries(rtable.margin, timestamp));
 
 for i = 1:3
     pi = [rtable.("x" + num2str(i)) ...

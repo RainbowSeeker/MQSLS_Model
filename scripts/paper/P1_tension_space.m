@@ -44,11 +44,11 @@ end
 % 设置坐标轴
 axis equal;
 grid on;
-xlabel('$\tau_1/N$', 'Interpreter', 'latex', 'FontSize', 14);
-ylabel('$\tau_2/N$', 'Interpreter', 'latex', 'FontSize', 14);
+xlabel('$\tau_2/N$', 'Interpreter', 'latex', 'FontSize', 14);
+ylabel('$\tau_1/N$', 'Interpreter', 'latex', 'FontSize', 14);
 zlabel('$\tau_3/N$', 'Interpreter', 'latex', 'FontSize', 14);
-zticks([5:5:15]);
-zlim([5, 16]);
+zticks(5:5:15);
+zlim([5, 17]);
 view(3);
 
 move_fig();

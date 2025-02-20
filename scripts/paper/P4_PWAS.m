@@ -21,3 +21,5 @@ for i = 1:3
     quiver3(X(i), Y(i), Z(i), U(i), V(i), W(i), 'off',...
             'LineWidth', 2.5, 'MaxHeadSize', 1, 'Color', color(i));
 end
+
+zlim([-23, -7]);

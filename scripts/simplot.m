@@ -92,6 +92,19 @@ for i = 1:3
     hold off;
 end
 
+%% Wrench Analysis
+if ~isempty(dataset.find('margin'))
+    figure;
+    sgtitle(['Wrench Analysis (', sim_name, ')']);
+
+    margin = dataset.find('margin').Values;
+    plot(margin);
+    title('');
+    xlabel('time (s)');
+    ylabel('margin (N)');
+    hold off;
+end
+
 %% UAVs
 return;
 if isempty(dataset.find('phi'))
